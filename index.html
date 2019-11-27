@@ -61,6 +61,8 @@ function DrawPaddle(){
 }
 
 function Draw(){
+  ctx.canvas.width  = window.innerWidth;
+  ctx.canvas.height = window.innerHeight;
   DrawBall();
   DrawPaddle();
 }
