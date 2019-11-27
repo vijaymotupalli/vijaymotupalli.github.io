@@ -1,62 +1,95 @@
 <!DOCTYPE html>
 <html>
-<style>
-body, html {
-  height: 100%;
-  margin: 0;
-}
-
-.bgimg {
-  background-image: url('https://images.pexels.com/photos/1020315/pexels-photo-1020315.jpeg?cs=srgb&dl=art-artistic-background-1020315.jpg&fm=jpg');
-  height: 100%;
-  background-position: center;
-  background-size: cover;
-  position: relative;
-  color: white;
-  font-family: "Courier New", Courier, monospace;
-  font-size: 25px;
-}
-
-.topleft {
-  position: absolute;
-  top: 0;
-  left: 16px;
-}
-
-.bottomleft {
-  position: absolute;
-  bottom: 0;
-  left: 16px;
-}
-
-.middle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
-
-hr {
-  margin: auto;
-  width: 40%;
-}
-</style>
+<head>
+    <meta charset="utf-8" />
+    <title>🎮vijay learnings</title>
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
 <body>
 
-<div class="bgimg">
-  <div class="topleft">
-    <p>Logo</p>
-  </div>
-  <div class="middle">
-    <h1>COMING SOON</h1>
-    <hr>
-    <p>35 days left</p>
-  </div>
-  <div class="bottomleft">
-    <p>Some text</p>
-  </div>
-</div>
+<canvas id="myCanvas" width="480" height="320"></canvas>
+
+<script>
+	var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+var x = canvas.width/2;
+var y = canvas.height - 30;
+var ballRadius = 10;
+var dx = 2;
+var dy = -2;
+var paddleHeight = 20;
+var paddleWidth = 100;
+var paddleX = (canvas.width-paddleWidth)/2;
+var paddleMovement = 70;
+
+document.addEventListener("keydown", keyDownHandler, false);
+function DrawBall() {
+  ctx.clearRect(0,0,canvas.width, canvas.height)
+  ctx.beginPath();
+  ctx.arc(x,y,ballRadius,0, 2 * Math.PI);
+  ctx.fillStyle = "#0095DD";
+  ctx.fill();
+  ctx.closePath();
+  x= x+ dx;
+  y= y+ dy;
+  if(x > canvas.width-ballRadius || x - ballRadius < 0){
+    dx= -dx;
+  }
+  if(y + dy < ballRadius) {
+    dy = -dy;
+} else if(y + dy + paddleHeight > canvas.height- ballRadius) {
+    if(x > paddleX && x + 2 < paddleX + paddleWidth) {
+        dy = -dy;
+    }
+    else {
+        alert('Game Over')
+        document.location.reload();
+        clearInterval(interval);
+    }
+}
+}
+
+function DrawPaddle(){
+  ctx.beginPath();
+  ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+  ctx.fillStyle = "#0095DD";
+  ctx.fill();
+  ctx.closePath();
+}
+
+function Draw(){
+  DrawBall();
+  DrawPaddle();
+}
+
+function keyDownHandler(e) {
+    if(e.key == "Right" || e.key == "ArrowRight") {
+        rightPressed();
+    }
+    else if(e.key == "Left" || e.key == "ArrowLeft") {
+        leftPressed();
+    }
+}
+
+function leftPressed(){
+    paddleX = paddleX - paddleMovement;
+    if(paddleX < 0){
+      paddleX= 0;
+    }
+}
+function rightPressed(){
+    paddleX = paddleX + paddleMovement;
+    if(paddleX + paddleWidth > canvas.width){
+      paddleX = canvas.width - paddleWidth;
+    }
+}
+
+
+const interval = setInterval(Draw,10);
+</script>
 
 </body>
 </html>
